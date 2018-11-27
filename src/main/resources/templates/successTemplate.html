@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<style>
+		body {
+		    background-color: linen;
+		}
+		
+		span.headerMessage {
+		    font-size: 2.5em;
+		}
+		
+		span.headerMessage {
+		    font-size: 2.0em;
+		} 
+		
+		div.headerCriteriaContainer {
+			background: light-grey;
+		}
+		
+		table.slotTable {
+			border: 1px solid black;
+    		text-align: center;
+		}
+		
+		table.slotTable td {
+			padding: 15px;
+		}
+	</style>
+</head>
+<body>
+    <span class="headerMessage">The Courtenator was successful!</span>
+    
+    <div class="headerCriteriaContainer">
+	    <span class="headerCriteriaMessage" th:each="criterion : ${criteria.criteria}"
+	    	th:text="${criterion.dayOfWeek + ' at ' + criterion.hour +  ':' + criterion.mins}">
+	    </span>
+    </div>
+    
+    <h2>Booked slots</h2>
+    <table class="slotTable">
+    	<tr th:each="day, iterStat : ${bookedSlots}">
+ 			<th th:text="${day.get(0).date.toString('EEE dd MMM')}"/>
+ 			<td th:each="slot : ${day}" th:text="${slot.startTime.toString('HH:mm')}"/>
+ 		</tr>
+    </table>
+    
+    <h2>Matched slots</h2>
+    <table class="slotTable">
+    	<tr th:each="day, iterStat : ${matchedSlots}">
+ 			<th th:text="${day.get(0).date.toString('EEE dd MMM')}"/>
+ 			<td th:each="slot : ${day}" th:text="${slot.startTime.toString('HH:mm')}"/>
+ 		</tr>
+    </table>
+</body>
+</html>
