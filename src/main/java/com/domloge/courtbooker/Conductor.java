@@ -56,8 +56,14 @@ public class Conductor {
 		List<TimeSlot> courtsBooked = new LinkedList<>();
 		for (TimeSlot slot : desired) {
 			logger.info("Match: "+slot.getDate().toString("EEE, dd MMM")+" -- "+slot.getStartTime().toString("HH:mm"));
-			if(book(slot)) {
+			BookingResult result = book(slot);
+			if(result.isSuccess()) {
 				courtsBooked.add(slot);
+			}
+			else {
+				notificationSender.sendBookingFail(criteria, desired, result.getMessage());
+				httpUtils.logout();
+				return;
 			}
 		}
 		
@@ -65,9 +71,6 @@ public class Conductor {
 			CommitResult result = httpUtils.commit();
 			if(result.isSuccess()) {
 				notificationSender.sendSuccess(criteria, desired, courtsBooked);
-			}
-			else {
-				notificationSender.sendBookingFail(criteria, desired, result.getMessage());
 			}
 		}
 		else {
@@ -77,7 +80,7 @@ public class Conductor {
 		httpUtils.logout();
 	}
 	
-	private boolean book(TimeSlot slot) throws ClientProtocolException, IOException {
+	private BookingResult book(TimeSlot slot) throws ClientProtocolException, IOException {
 		String json = httpUtils.loadCourts(slot);
 		ObjectMapper mapper = new ObjectMapper();
 		TypeFactory typeFactory = mapper.getTypeFactory();
@@ -91,10 +94,15 @@ public class Conductor {
 		for (Court court : courts) {
 			logger.info("Court: "+court);
 		}
-		if(courts.size() < 1) return false;
+		if(courts.size() < 1) {
+			BookingResult result = new BookingResult();
+			result.setMessage("No courts");
+			result.setSuccess(false);
+			return result;
+		}
 		logger.info("Booking "+courts.get(0));
 		BookingResult bookingResult = book(slot, courts.get(0));
-		return bookingResult.isSuccess();
+		return bookingResult;
 	}
 	
 	private BookingResult book(TimeSlot slot, Court court) throws IOException {
