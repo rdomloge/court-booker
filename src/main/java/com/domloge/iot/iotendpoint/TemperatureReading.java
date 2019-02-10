@@ -16,7 +16,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class TemperatureReading {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	private String source;
