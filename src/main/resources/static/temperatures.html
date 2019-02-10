@@ -1,0 +1,47 @@
+<html>
+<head>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	crossorigin="anonymous"></script>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+	google.charts.load('current', {packages: ['corechart']});
+	google.charts.setOnLoadCallback(drawChart);
+
+	
+	function drawChart() {
+		// Define the chart to be drawn.
+		var data = new google.visualization.DataTable();
+		data.addColumn('string', 'Element');
+		data.addColumn('number', 'Pi Zero');
+
+		// Instantiate and draw the chart.
+		var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+		chart.draw(data, null);
+		
+		updateGraph(data, chart);
+	}
+	
+	function updateGraph(data, chart) {
+		$.getJSON("/temperatureReadings", function(response) {
+			var json = response._embedded.temperatureReadings;
+			console.log("Received: ", json);
+			
+			for (reading in json) {
+				var date = new Date(json[reading].time);
+				var pretty = date.getHours() + ':' + date.getMinutes();
+				data.addRow([pretty, json[reading].temp]);
+			}
+			
+			chart.draw(data, null);
+		});
+	}
+</script>
+</head>
+<body>
+	<div id="curve_chart" style="width: 900px; height: 500px"></div>
+</body>
+</html>
