@@ -37,7 +37,7 @@
 		var da = today.getDate();
 		var dateQ = yr+'-'+mo+'-'+da;
 		
-		$.getJSON("/temperatureReadings/search/findByTimeLessThanEqual?time="+dateQ, function(response) {
+		$.getJSON("/temperatureReadings/search/findByTimeGreaterThanEqual?time="+dateQ, function(response) {
 			var json = response._embedded.temperatureReadings;
 			$("#stats").html(json.length+' points');
 			console.log("Received: ", json);
