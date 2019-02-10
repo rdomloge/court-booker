@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -23,6 +25,7 @@ public class TemperatureReading {
 	
 	private float temp;
 	
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date time;
 	
 	private String hostname;
