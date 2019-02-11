@@ -16,7 +16,7 @@ public interface TemperatureReadingRepository extends PagingAndSortingRepository
 	List<TemperatureReading> findByHostname(String hostname);
 	
 	List<TemperatureReading> findByTimeGreaterThanEqual(
-			@DateTimeFormat(pattern="yyyy-MM-dd")
+			@DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm")
 			@Param("time")Date from);
 	
 	List<TemperatureReading> findTop50By();
