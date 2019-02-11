@@ -10,32 +10,33 @@
 <script type="text/javascript">
 	google.charts.load('current', {packages: ['corechart']});
 	google.charts.setOnLoadCallback(drawChart);
-
+	var data;
+	var options;
+	var chart;
 	
 	function drawChart() {
 		// Define the chart to be drawn.
-		var data = new google.visualization.DataTable();
+		data = new google.visualization.DataTable();
 		data.addColumn('string', 'Element');
 		data.addColumn('number', 'Pi Zero');
 		
 		// Set chart options
-      	var options = {'title':'Temperature over time',
+      	options = {'title':'Temperature over time',
 			'width':900,
 			'height':300};
 
 		// Instantiate and draw the chart.
-		var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+		chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 		chart.draw(data, options);
 		
-		updateGraph(data, chart, options);
+		updateGraphForToday();
 	}
 	
-	function updateGraph(data, chart, options) {
-		var today = new Date();
-		var yr = today.getFullYear();
-		var mo = today.getMonth()+1;
-		var da = today.getDate();
-		var dateQ = yr+'-'+mo+'-'+da;
+	function updateGraph(dateQ) {
+		
+		data = new google.visualization.DataTable();
+		data.addColumn('string', 'Element');
+		data.addColumn('number', 'Pi Zero');
 		
 		$.getJSON("/temperatureReadings/search/findByTimeGreaterThanEqual?time="+dateQ, function(response) {
 			var json = response._embedded.temperatureReadings;
@@ -51,9 +52,53 @@
 			chart.draw(data, options);
 		});
 	}
+	
+	function updateGraphForToday() {
+		var date = new Date();
+		date.setHours(0);
+		date.setMinutes(0);
+		updateGraph(buildDateString(date));
+	}
+	
+	function buildDateString(date) {
+		var yr = date.getFullYear();
+		var mo = pad(date.getMonth()+1, 2);
+		var da = pad(date.getDate(), 2);
+		var hr = pad(date.getHours(), 2);
+		var mi = pad(date.getMinutes(), 2);
+		return yr+'-'+mo+'-'+da+' '+hr+':'+mi;
+	}
+	
+	function pad(num, size) {
+	    var s = num+"";
+	    while (s.length < size) s = "0" + s;
+	    return s;
+	}
+	
+	function updateGraphForLastXHours(hrs) {
+		var date = new Date();
+		date.setHours(date.getHours() - hrs);
+		updateGraph(buildDateString(date));
+	}
+	
+	function handleSelectChange(value) {
+		if('today' == value) {
+			updateGraphForToday();
+		}
+		else {
+			updateGraphForLastXHours(value);
+		}
+	}
 </script>
 </head>
 <body>
+	<select onchange="handleSelectChange(this.value)" style="margin: 20px; font-size: x-large;">
+		<option value="today">Today</option>
+		<option value="24">Last 24hrs</option>
+		<option value="12">Last 12hrs</option>
+		<option value="48">Last 48hrs</option>
+		<option value="72">Last 72hrs</option>
+	</select>
 	<div id="curve_chart" style="width: 900px; height: 300px"></div>
 	<div id="stats" style="font-family: sans-serif; margin-left: 80px;"></div>
 </body>
