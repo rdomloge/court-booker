@@ -47,7 +47,7 @@
 				var date = new Date(json[reading].time);
 				var options = { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' };
 				var pretty = date.toLocaleDateString("en-UK", options);					
-				data.addRow([pretty, json[reading].temp]);
+				data.addRow([pretty, json[reading].distance_cm]);
 			}
 			
 			chart.draw(data, options);
