@@ -15,7 +15,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
-public class DistanceReading {
+public class FlowReading {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class DistanceReading {
 
 	private String source;
 	
-	private float distance_cm;
+	private float flow_lpm;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date time;
@@ -48,12 +48,12 @@ public class DistanceReading {
 		this.source = source;
 	}
 
-	public float getDistance_cm() {
-		return distance_cm;
+	public float getFlow_lpm() {
+		return flow_lpm;
 	}
 
-	public void setDistance_cm(float distance_cm) {
-		this.distance_cm = distance_cm;
+	public void setFlow_lpm(float flow_lpm) {
+		this.flow_lpm = flow_lpm;
 	}
 
 	public Date getTime() {
