@@ -8,7 +8,7 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <script type="text/javascript">
-	google.charts.load('current', {packages: ['corechart']});
+	google.charts.load('current', {packages: ['corechart', 'gauge']});
 	google.charts.setOnLoadCallback(drawChart);
 	var data;
 	var options;
@@ -51,6 +51,13 @@
 			}
 			
 			chart.draw(data, options);
+			if(json.length > 0) {
+				drawGauge(json[json.length-1].distance_cm);
+			}
+			else {
+				console.log('No data for gauge');
+				drawGauge(0);
+			}
 		});
 	}
 	
@@ -91,6 +98,32 @@
 			updateGraphForLastXHours(value);
 		}
 	}
+	
+	function drawGauge(value) {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['Salt', value]
+        ]);
+
+        var options = {
+          width: 400, height: 120,
+          redFrom: 50, redTo: 60,
+          yellowFrom:30, yellowTo: 50,
+          greenFrom:0, greenTo: 30,
+          minorTicks: 5,
+          min: 0, max: 60
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('gauge'));
+
+        chart.draw(data, options);
+
+        setInterval(function() {
+          //data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 13000);
+      }
 </script>
 </head>
 <body>
@@ -104,6 +137,7 @@
 		<option value="72">Last 72hrs</option>
 	</select>
 	<div id="curve_chart" style="width: 900px; height: 300px"></div>
+	<div id="gauge" style="width: 400px; height: 120px;"></div>
 	<div id="stats" style="font-family: sans-serif; margin-left: 80px;"></div>
 </body>
 </html>
