@@ -20,11 +20,6 @@
 		data.addColumn('string', 'Element');
 		data.addColumn('number', 'Flow');
 		
-		// Set chart options
-      	options = {'title':'Flow over time',
-			'width':900,
-			'height':300};
-
 		// Instantiate and draw the chart.
 		chart = new google.visualization.ColumnChart(document.getElementById('curve_chart'));
 		chart.draw(data, options);
@@ -36,8 +31,8 @@
 		
 		data = new google.visualization.DataTable();
 		data.addColumn('string', 'Element');
-		data.addColumn('number', 'Pi Zero');
-		
+		data.addColumn('number', 'Flow');
+
 		$.getJSON("/flowReadings/search/findByTimeGreaterThanEqual?time="+dateQ, function(response) {
 			var json = response._embedded.flowReadings;
 			$("#stats").html(json.length+' points');
@@ -45,7 +40,15 @@
 			
 			for (reading in json) {
 				var date = new Date(json[reading].time);
-				var options = { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' };
+				var options = {
+					'title':'Flow over time',
+                        		'width':900,
+                        		'height':300,
+					'hour': '2-digit', 
+					'minute': '2-digit', 
+					'month': 'short', 
+					'day': 'numeric'
+				};
 				var pretty = date.toLocaleDateString("en-UK", options);					
 				data.addRow([pretty, json[reading].flow_lpm]);
 			}

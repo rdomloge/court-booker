@@ -15,28 +15,26 @@
 	var chart;
 	
 	function drawChart() {
-		// Define the chart to be drawn.
-		data = new google.visualization.DataTable();
-		data.addColumn('string', 'Element');
-		data.addColumn('number', 'Temperature');
 		
-		// Set chart options
-      	options = {"title":"Temperature over time",
-			"width":900,
-			"height":300};
-
+		data = initDataTable();
+		
 		// Instantiate and draw the chart.
 		chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 		chart.draw(data, options);
 		
 		updateGraphForToday();
 	}
+
+	function initDataTable() {
+		data = new google.visualization.DataTable();
+		data.addColumn('string', 'Element');
+		data.addColumn('number', 'Temp');
+		return data;
+	}
 	
 	function updateGraph(dateQ) {
 		
-		data = new google.visualization.DataTable();
-		data.addColumn('string', 'Element');
-		data.addColumn('number', 'Pi Zero');
+		data = initDataTable();	
 		
 		$.getJSON("/temperatureReadings/search/findByTimeGreaterThanEqual?time="+dateQ, function(response) {
 			var json = response._embedded.temperatureReadings;
@@ -45,15 +43,15 @@
 			
 			for (reading in json) {
 				var date = new Date(json[reading].time);
-				/* var pretty = 
-					date.getHours() + 
-					':' + 
-					date.getMinutes() + 
-					' ' + 
-					date.getDate() + 
-					'/' + 
-					(date.getMonth()+1); */
-				var options = { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' };
+				var options = {
+                                        'title':'Temperature over time',
+                                        'width':900,
+                                        'height':300,
+                                        'hour': '2-digit',
+                                        'minute': '2-digit',
+                                        'month': 'short',
+                                        'day': 'numeric'
+				};
 				var pretty = date.toLocaleDateString("en-UK", options);					
 				data.addRow([pretty, json[reading].temp]);
 			}
