@@ -18,7 +18,7 @@
 		// Define the chart to be drawn.
 		data = new google.visualization.DataTable();
 		data.addColumn('string', 'Element');
-		data.addColumn('number', 'Pi Zero');
+		data.addColumn('number', 'Distance');
 		
 		// Set chart options
       	options = {'title':'Temperature over time',
@@ -127,7 +127,7 @@
 </script>
 </head>
 <body>
-	<select onchange="handleSelectChange(this.value)" style="margin: 20px; font-size: x-large;">
+	<select onchange="handleSelectChange(this.value)" style="margin: 20px; font-size: x-large; float: left">
 		<option value="today">Today</option>
 		<option value="3">Last 3hrs</option>
 		<option value="6">Last 6hrs</option>
@@ -136,8 +136,9 @@
 		<option value="48">Last 48hrs</option>
 		<option value="72">Last 72hrs</option>
 	</select>
+
+	<div id="gauge" style="width: 400px; height: 120px"></div>
 	<div id="curve_chart" style="width: 900px; height: 300px"></div>
-	<div id="gauge" style="width: 400px; height: 120px;"></div>
 	<div id="stats" style="font-family: sans-serif; margin-left: 80px;"></div>
 </body>
 </html>
