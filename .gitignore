@@ -26,3 +26,4 @@ iot-endpoint.db
 .classpath
 .settings
 .project
+/target/
