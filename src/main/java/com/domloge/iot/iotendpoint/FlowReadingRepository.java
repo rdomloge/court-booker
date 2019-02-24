@@ -24,7 +24,7 @@ public interface FlowReadingRepository extends PagingAndSortingRepository<FlowRe
 	
 	
 	@Query(value = "select id, source, sum(flow_lpm), time, hostname "
-			+ "from flow_reading fr where time > '2019-02-01'"
+			+ "from flow_reading fr where time > '2019-02-01' "
 			+ "group by time", nativeQuery = true)
 	List<FlowReading> dailyAggregation();
 }
