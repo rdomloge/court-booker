@@ -13,6 +13,7 @@
 	var data;
 	var options;
 	var chart;
+	var json;
 	
 	function drawChart() {
 		
@@ -37,27 +38,41 @@
 		data = initDataTable();	
 		
 		$.getJSON("/temperatureReadings/search/findByTimeGreaterThanEqual?time="+dateQ, function(response) {
-			var json = response._embedded.temperatureReadings;
+			if(undefined == json) {
+				json = response._embedded.temperatureReadings;	
+			}
+			else {
+				json.push(response._embedded.temperatureReadings);
+			}
 			$("#stats").html(json.length+' points');
 			console.log("Received: ", json);
-			
-			for (reading in json) {
-				var date = new Date(json[reading].time);
-				var options = {
-                                        'title':'Temperature over time',
-                                        'width':900,
-                                        'height':300,
-                                        'hour': '2-digit',
-                                        'minute': '2-digit',
-                                        'month': 'short',
-                                        'day': 'numeric'
-				};
-				var pretty = date.toLocaleDateString("en-UK", options);					
-				data.addRow([pretty, json[reading].temp]);
-			}
-			
-			chart.draw(data, options);
+			drawGraph();
+			$(this).delay(3000).queue(function() {
+				if(json.length > 0) {
+					var latestDate = json[json.length].date;
+					updateGraph(latestDate);
+				}
+			});
 		});
+	}
+	
+	function drawGraph() {
+		for (reading in json) {
+			var date = new Date(json[reading].time);
+			var options = {
+                'title':'Temperature over time',
+                'width':900,
+                'height':300,
+                'hour': '2-digit',
+                'minute': '2-digit',
+                'month': 'short',
+                'day': 'numeric'
+			};
+			var pretty = date.toLocaleDateString("en-UK", options);					
+			data.addRow([pretty, json[reading].temp]);
+		}
+		
+		chart.draw(data, options);
 	}
 	
 	function updateGraphForToday() {
