@@ -46,7 +46,7 @@
 			else {
 				var newData = response._embedded.temperatureReadings;
 				for (reading in newData) {
-					if(json[json.length].time != newData[reading].time) {
+					if(json[json.length-1].time != newData[reading].time) {
 						json.push(newData[reading]);
 					}
 				}
