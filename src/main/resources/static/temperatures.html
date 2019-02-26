@@ -44,8 +44,9 @@
 			else {
 				var newData = response._embedded.temperatureReadings;
 				for (reading in newData) {
-					json.push(newData[reading]);
-					
+					if(json[json.length] != newData[reading]) {
+						json.push(newData[reading]);
+					}
 				}
 			}
 			$("#stats").html(json.length+' points');
