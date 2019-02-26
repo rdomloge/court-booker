@@ -37,7 +37,7 @@
 		
 		data = initDataTable();	
 		
-		$.getJSON("/temperatureReadings/search/findByTimeGreaterThanEqual?time="+dateQ, function(response) {
+		$.getJSON("/temperatureReadings/search/findByTimeGreaterThan?time="+dateQ, function(response) {
 			if(undefined == json) {
 				json = response._embedded.temperatureReadings;	
 			}
