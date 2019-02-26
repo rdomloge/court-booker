@@ -42,14 +42,18 @@
 				json = response._embedded.temperatureReadings;	
 			}
 			else {
-				json.push(response._embedded.temperatureReadings);
+				var newData = response._embedded.temperatureReadings;
+				for (reading in newData) {
+					json.push(newData[reading]);
+					
+				}
 			}
 			$("#stats").html(json.length+' points');
 			console.log("Received: ", json);
 			drawGraph();
 			$(this).delay(3000).queue(function() {
 				if(json.length > 0) {
-					var latestDate = json[json.length].date;
+					var latestDate = json[json.length-1].time;
 					updateGraph(latestDate);
 				}
 			});
