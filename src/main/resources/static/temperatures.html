@@ -38,19 +38,20 @@
 		data = initDataTable();	
 		
 		$.getJSON("/temperatureReadings/search/findByTimeGreaterThan?time="+dateQ, function(response) {
+			console.log("Received: ", response._embedded.temperatureReadings);
+			
 			if(undefined == json) {
 				json = response._embedded.temperatureReadings;	
 			}
 			else {
 				var newData = response._embedded.temperatureReadings;
 				for (reading in newData) {
-					if(json[json.length] != newData[reading]) {
+					if(json[json.length].time != newData[reading].time) {
 						json.push(newData[reading]);
 					}
 				}
 			}
 			$("#stats").html(json.length+' points');
-			console.log("Received: ", json);
 			drawGraph();
 			$(this).delay(3000).queue(function() {
 				if(json.length > 0) {
