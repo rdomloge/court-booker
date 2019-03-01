@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Column;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -23,7 +24,8 @@ public class FlowReading {
 
 	private String source;
 	
-	private float flow_lpm;
+	@Column(name="flow_lpm")
+	private float flowLpm;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date time;
@@ -48,12 +50,12 @@ public class FlowReading {
 		this.source = source;
 	}
 
-	public float getFlow_lpm() {
-		return flow_lpm;
+	public float getFlowLpm() {
+		return flowLpm;
 	}
 
-	public void setFlow_lpm(float flow_lpm) {
-		this.flow_lpm = flow_lpm;
+	public void setFlowLpm(float flowLpm) {
+		this.flowLpm = flowLpm;
 	}
 
 	public Date getTime() {

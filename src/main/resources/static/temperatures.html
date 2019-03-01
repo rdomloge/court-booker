@@ -53,7 +53,7 @@
 			}
 			$("#stats").html(json.length+' points');
 			drawGraph();
-			$(this).delay(3000).queue(function() {
+			$(this).delay(60000).queue(function() {
 				if(json.length > 0) {
 					var latestDate = json[json.length-1].time;
 					updateGraph(latestDate);

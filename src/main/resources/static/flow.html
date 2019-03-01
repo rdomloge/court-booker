@@ -21,19 +21,29 @@
 		data.addColumn('number', 'Flow');
 		
 		// Instantiate and draw the chart.
-		chart = new google.visualization.ColumnChart(document.getElementById('curve_chart'));
+		//chart = new google.visualization.ColumnChart(document.getElementById('curve_chart'));
+		chart = new google.visualization.SteppedAreaChart(document.getElementById('curve_chart'));
+
 		chart.draw(data, options);
 		
 		updateGraphForToday();
 	}
 	
-	function updateGraph(dateQ) {
+	function updateGraphForNonZero() {
+		updateGraphForUrl('/flowReadings/search/readAllByFlowLpmGreaterThan?lpm=0');
+	}
+
+	function updateGraphForDateQuery(dateQ) {
+		updateGraphForUrl("/flowReadings/search/findByTimeGreaterThanEqual?time="+dateQ);
+	}
+
+	function updateGraphForUrl(url) {
 		
 		data = new google.visualization.DataTable();
 		data.addColumn('string', 'Element');
 		data.addColumn('number', 'Flow');
 
-		$.getJSON("/flowReadings/search/findByTimeGreaterThanEqual?time="+dateQ, function(response) {
+		$.getJSON(url, function(response) {
 			var json = response._embedded.flowReadings;
 			$("#stats").html(json.length+' points');
 			console.log("Received: ", json);
@@ -50,7 +60,7 @@
 					'day': 'numeric'
 				};
 				var pretty = date.toLocaleDateString("en-UK", options);					
-				data.addRow([pretty, json[reading].flow_lpm]);
+				data.addRow([pretty, json[reading].flowLpm]);
 			}
 			
 			chart.draw(data, options);
@@ -61,7 +71,7 @@
 		var date = new Date();
 		date.setHours(0);
 		date.setMinutes(0);
-		updateGraph(buildDateString(date));
+		updateGraphForDateQuery(buildDateString(date));
 	}
 	
 	function buildDateString(date) {
@@ -83,12 +93,15 @@
 		var date = new Date();
 		var hrsInMillis = (60*60*1000) * hrs;
 		date.setTime(date.getTime() - hrsInMillis);
-		updateGraph(buildDateString(date));
+		updateGraphForDateQuery(buildDateString(date));
 	}
 	
 	function handleSelectChange(value) {
 		if('today' == value) {
 			updateGraphForToday();
+		}
+		else if('g0' == value) {
+			updateGraphForNonZero();
 		}
 		else {
 			updateGraphForLastXHours(value);
@@ -106,6 +119,7 @@
 		<option value="24">Last 24hrs</option>
 		<option value="48">Last 48hrs</option>
 		<option value="72">Last 72hrs</option>
+		<option value="g0">Non-zero</option>
 	</select>
 	<div id="curve_chart" style="width: 900px; height: 300px"></div>
 	<div id="stats" style="font-family: sans-serif; margin-left: 80px;"></div>
