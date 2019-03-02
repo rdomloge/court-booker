@@ -35,17 +35,8 @@ public interface FlowReadingRepository extends CrudRepository<FlowReading, Integ
 			@DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm")
 			@Param("time")Date from);
 	
-//	SELECT 
-//	    DATE(created_at) AS create_date,
-//	    COUNT(id) AS total
-//	FROM
-//	    data_table
-//	GROUP BY 
-//	    DATE(created_at)
-	
+	List<FlowReading> readAllByFlowLpmGreaterThan(Float lpm);
 
-//	List<FlowReading> readAllByFlowLpmGreaterThan(Float lpm);
-//
 //	List<FlowReading> readAllByFlowLpmGreaterThanAndTimeGreaterThanEqual(
 //		Float lpm, 
 //		@DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm") 
