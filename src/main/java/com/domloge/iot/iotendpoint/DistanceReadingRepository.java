@@ -23,7 +23,7 @@ public interface DistanceReadingRepository extends PagingAndSortingRepository<Di
 			"  CAST(time as DATE) as time, \n" + 
 			"  source, \n" + 
 			"  hostname,\n" + 
-			"  AVG(distance_cm) as distance_cm\n" + 
+			"  MEDIAN(distance_cm) as distance_cm\n" + 
 			"FROM distance_reading \n" + 
 			"WHERE time >= :time\n" + 
 			"GROUP BY time,hostname\n" + 
