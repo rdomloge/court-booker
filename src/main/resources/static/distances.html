@@ -27,13 +27,17 @@
 		updateGraphForToday();
 	}
 	
-	function updateGraph(dateQ) {
+	function updateGraphForDate(dateQ) {
+		updateGraphForUrl("/distanceReadings/search/findByTimeGreaterThanEqual?time="+dateQ);
+	}
+	
+	function updateGraphForUrl(url) {
 		
 		data = new google.visualization.DataTable();
 		data.addColumn('string', 'Element');
 		data.addColumn('number', 'Distance');
 
-		$.getJSON("/distanceReadings/search/findByTimeGreaterThanEqual?time="+dateQ, function(response) {
+		$.getJSON(url, function(response) {
 			var json = response._embedded.distanceReadings;
 			$("#stats").html(json.length+' points');
 			console.log("Received: ", json);
@@ -41,13 +45,13 @@
 			for (reading in json) {
 				var date = new Date(json[reading].time);
 				var options = {
-                                        'title':'Distance over time',
-                                        'width':900,
-                                        'height':300,
-                                        'hour': '2-digit',
-                                        'minute': '2-digit',
-                                        'month': 'short',
-                                        'day': 'numeric'
+	                'title':'Distance over time',
+	                'width':900,
+	                'height':300,
+	                'hour': '2-digit',
+	                'minute': '2-digit',
+	                'month': 'short',
+	                'day': 'numeric'
 				};
 
 				var pretty = date.toLocaleDateString("en-UK", options);					
@@ -69,7 +73,15 @@
 		var date = new Date();
 		date.setHours(0);
 		date.setMinutes(0);
-		updateGraph(buildDateString(date));
+		updateGraphForDate(buildDateString(date));
+	}
+	
+	function updateGraphForDailyAvg() {
+		var date = new Date();
+		date.setYear(date.getYear() - 1);
+		var dateStr = buildDateString(date);
+		var url = '/distanceReadings/search/findDailyAverageByTimeGreaterThanEqualNative?time='+dateStr;
+		updateGraphForUrl(url);
 	}
 	
 	function buildDateString(date) {
@@ -91,12 +103,15 @@
 		var date = new Date();
 		var hrsInMillis = (60*60*1000) * hrs;
 		date.setTime(date.getTime() - hrsInMillis);
-		updateGraph(buildDateString(date));
+		updateGraphForDate(buildDateString(date));
 	}
 	
 	function handleSelectChange(value) {
 		if('today' == value) {
 			updateGraphForToday();
+		}
+		else if('dailyAvg' == value) {
+			updateGraphForDailyAvg();
 		}
 		else {
 			updateGraphForLastXHours(value);
@@ -139,6 +154,7 @@
 		<option value="24">Last 24hrs</option>
 		<option value="48">Last 48hrs</option>
 		<option value="72">Last 72hrs</option>
+		<option value="dailyAvg">Daily Avg</option>
 	</select>
 
 	<div id="gauge" style="width: 400px; height: 120px"></div>
