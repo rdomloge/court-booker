@@ -24,7 +24,7 @@
 		chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 		chart.draw(data, options);
 		
-		updateGraphForToday();
+		updateGraphForDailyAvg()
 	}
 	
 	function updateGraphForDate(dateQ) {
@@ -154,7 +154,7 @@
 		<option value="24">Last 24hrs</option>
 		<option value="48">Last 48hrs</option>
 		<option value="72">Last 72hrs</option>
-		<option value="dailyAvg">Daily Avg</option>
+		<option value="dailyAvg" selected>Daily Avg</option>
 	</select>
 
 	<div id="gauge" style="width: 400px; height: 120px"></div>
