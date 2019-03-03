@@ -17,7 +17,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
-@Table(indexes = {@Index(name="time_index", columnList="time", unique=false)})
+@Table(indexes = {@Index(name="distance_time_index", columnList="time", unique=false)})
 public class DistanceReading {
 
 	@Id
