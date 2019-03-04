@@ -8,7 +8,7 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <script type="text/javascript">
-	google.charts.load('current', {packages: ['corechart']});
+	google.charts.load('current', {packages: ['corechart', 'gauge']});
 	google.charts.setOnLoadCallback(drawChart);
 	var data;
 	var options;
@@ -24,6 +24,9 @@
 		chart.draw(data, options);
 		
 		updateGraphForToday();
+		loadAverageGauge();
+		loadMinimumGauge();
+		loadMaximumGauge();
 	}
 
 	function initDataTable() {
@@ -31,6 +34,49 @@
 		data.addColumn('string', 'Element');
 		data.addColumn('number', 'Temp');
 		return data;
+	}
+	
+	function loadMinimumGauge() {
+		loadGauge('findMinimumTempToday', 'min_gauge', 'Min');
+	}
+	
+	function loadMaximumGauge() {
+		loadGauge('findMaximumTempToday', 'max_gauge', 'Max');
+	}
+	
+	function loadAverageGauge() {
+		loadGauge('findAverageTempToday', 'avg_gauge', 'Avg');
+	}
+	
+	function buildGaugeOptions() {
+		return {
+	          width: 400, height: 120,
+	          redFrom: 28, redTo: 40,
+	          yellowFrom:25, yellowTo: 28,
+	          greenFrom:5, greenTo: 25,
+	          blueFrom:-10, blueTo: 5,
+	          minorTicks: 5,
+	          min: -10, max: 40
+	        };
+	}
+	
+	function loadGauge(urlPostFix, element, label) {
+		
+		data = new google.visualization.DataTable();
+		data.addColumn('string', 'Element');
+		data.addColumn('number', 'Temp');
+		
+		$.getJSON("/temperatureReadings/search/"+urlPostFix, function(response) {
+			var avgJson = response;
+			var chart = new google.visualization.Gauge(document.getElementById(element));
+			var data = google.visualization.arrayToDataTable([
+		          ['Label', 'Value'],
+		          [label, avgJson.temp]
+		        ]);
+
+		        var options = buildGaugeOptions();
+			chart.draw(data, options);
+		});
 	}
 	
 	function updateGraph(dateQ) {
@@ -121,7 +167,7 @@
 </script>
 </head>
 <body>
-	<select onchange="handleSelectChange(this.value)" style="margin: 20px; font-size: x-large;">
+	<select onchange="handleSelectChange(this.value)" style="margin: 20px; font-size: x-large; float: left">
 		<option value="today">Today</option>
 		<option value="1">Last hour</option>
 		<option value="3">Last 3hrs</option>
@@ -131,7 +177,12 @@
 		<option value="48">Last 48hrs</option>
 		<option value="72">Last 72hrs</option>
 	</select>
-	<div id="curve_chart" style="width: 900px; height: 300px"></div>
+	<div style="float: right">
+		<div id="avg_gauge" style="width: 400px; height: 120px;"></div>
+		<div id="min_gauge" style="width: 400px; height: 120px;"></div>
+		<div id="max_gauge" style="width: 400px; height: 120px;"></div>
+	</div>
+	<div id="curve_chart" style="width: 900px; height: 300px; float: left"></div>
 	<div id="stats" style="font-family: sans-serif; margin-left: 80px;"></div>
 </body>
 </html>
