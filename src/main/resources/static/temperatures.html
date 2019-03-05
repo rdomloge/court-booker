@@ -167,7 +167,7 @@
 </script>
 </head>
 <body>
-	<select onchange="handleSelectChange(this.value)" style="margin: 20px; font-size: x-large">
+	<select onchange="handleSelectChange(this.value)" style="margin: 20px; font-size: x-large; float: left">
 		<option value="today">Today</option>
 		<option value="1">Last hour</option>
 		<option value="3">Last 3hrs</option>
@@ -177,12 +177,10 @@
 		<option value="48">Last 48hrs</option>
 		<option value="72">Last 72hrs</option>
 	</select>
-	<div style="float: right">
-		<div id="avg_gauge" style="width: 400px; height: 120px;"></div>
-		<div id="min_gauge" style="width: 400px; height: 120px;"></div>
-		<div id="max_gauge" style="width: 400px; height: 120px;"></div>
-	</div>
-	<div id="curve_chart" style="width: 900px; height: 300px"></div>
+	<div id="avg_gauge" style="width: 120px; height: 120px; float: left"></div>
+	<div id="min_gauge" style="width: 120px; height: 120px; float: left"></div>
+	<div id="max_gauge" style="width: 120px; height: 120px; float: left"></div>
+	<div id="curve_chart" style="width: 900px; height: 300px; clear: left"></div>
 	<div id="stats" style="font-family: sans-serif; margin-left: 80px;"></div>
 </body>
 </html>
