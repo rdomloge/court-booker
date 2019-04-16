@@ -6,14 +6,18 @@ import java.util.Map;
 import org.joda.time.DateTimeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.domloge.courtbooker.domain.TimeSlot;
 
 public class DynamicTimeSlotCriteria implements TimeSlotCriteria {
 	
-	private static final Logger logger = LoggerFactory.getLogger(DynamicTimeSlotCriteria.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicTimeSlotCriteria.class);
 	
 	public static final Map<String, Integer> dayMap = new HashMap<String, Integer>();
+	
+	@Value("${TEST_MODE:false}")
+	private boolean testMode;
 	
 	static {
 		dayMap.put("mon", DateTimeConstants.MONDAY);
@@ -31,15 +35,16 @@ public class DynamicTimeSlotCriteria implements TimeSlotCriteria {
 		criteria = new TimeSlotCriteria[args.length];
 		for (int i = 0; i < args.length; i++) {
 			String string = args[i];
-			if( ! string.matches("(mon|tue|wed|thu|fri|sat|sun)\\:\\d{2}:\\d{2}")) {
+			if( ! string.matches("(mon|tue|wed|thu|fri|sat|sun)\\:\\d{2}:\\d{2}:\\d{1}")) {
 				throw new IllegalArgumentException(string);				
 			}
 			String[] parts = string.split(":");
 			int day = dayMap.get(parts[0]);
 			int hour = Integer.parseInt(parts[1]);
 			int min = Integer.parseInt(parts[2]);
-			criteria[i] = new Criterion(day, hour, min);
-			logger.info("Matching courts for "+day+"("+parts[0]+") at "+hour+":"+min);
+			int daysAhead = Integer.parseInt(parts[3]);
+			criteria[i] = new Criterion(day, hour, min, daysAhead);
+			LOGGER.info("Matching courts for {}({}) at {}:{}, in >{} days", day, parts[0], hour, min, daysAhead);
 		}
 	}
 	

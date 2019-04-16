@@ -40,6 +40,9 @@ public class Conductor {
 	@Autowired
 	private NotificationSender notificationSender;
 	
+	@Autowired
+	private Timelock timeLock;
+	
 	
 	public Conductor(TimeSlotCriteria criteria) {
 		super();
@@ -55,6 +58,8 @@ public class Conductor {
 		
 		List<TimeSlot> desired = find(timeSlots);
 		LOGGER.info(desired.size()+" matched");
+		
+		timeLock.waitForGoTime();
 		
 		List<TimeSlot> courtsBooked = new LinkedList<>();
 		for (TimeSlot slot : desired) {

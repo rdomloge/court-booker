@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,6 +20,8 @@ import com.domloge.courtbooker.domain.TimeSlot;
 
 @Component
 public class EmailNotificationSender implements NotificationSender {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(EmailNotificationSender.class);
 	
 	@Autowired
 	private TemplateEngine templateEngine;
@@ -27,6 +31,9 @@ public class EmailNotificationSender implements NotificationSender {
 	
 	@Value("${notification_recipient:rdomloge@gmail.com}")
 	private String notification_recipient;
+	
+	@Value("${SUPPRESS_EMAIL:false}")
+	private boolean SUPPRESS_EMAIL = false;
 	
 	@SuppressWarnings("unchecked")
 	private List<List<TimeSlot>> convertToTemplateStructure(List<TimeSlot> slots) {
@@ -76,14 +83,18 @@ public class EmailNotificationSender implements NotificationSender {
 	}
 	
 	public void prepareAndSend(String recipient, String message) {
-	    MimeMessagePreparator messagePreparator = mimeMessage -> {
-	        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
-	        messageHelper.setFrom(recipient);
-	        messageHelper.setTo(recipient);
-	        messageHelper.setSubject("Courtenator");
-	        messageHelper.setText("Please use an HTML-capable mail client", message);
-	    };
-
-	    mailSender.send(messagePreparator);
+		if( ! SUPPRESS_EMAIL) {
+		    MimeMessagePreparator messagePreparator = mimeMessage -> {
+		        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+		        messageHelper.setFrom(recipient);
+		        messageHelper.setTo(recipient);
+		        messageHelper.setSubject("Courtenator");
+		        messageHelper.setText("Please use an HTML-capable mail client", message);
+		    };
+	
+		    mailSender.send(messagePreparator);
+		}
+		else
+			LOGGER.info("Emails suppressed");
 	}
 }

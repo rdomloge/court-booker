@@ -25,10 +25,15 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.domloge.courtbooker.domain.Court;
 import com.domloge.courtbooker.domain.TimeSlot;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 @Component
 public class HttpUtils {
@@ -44,6 +49,9 @@ public class HttpUtils {
 	
 	private static final String PAY_PAGE = "https://basingstokesc.legendonlineservices.co.uk/basingstoke/basket/pay";
 	
+	
+	@Value("${verbose:false}")
+	private boolean verbose;
 
 	private HttpContext ctx;
 	
@@ -108,7 +116,7 @@ public class HttpUtils {
 			try(CloseableHttpResponse response = client.execute(new HttpGet(url), ctx)) {
 				InputStream inputStream = response.getEntity().getContent();
 				String text = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
-				String printable = text.length() > 50 ? text.substring(0, 50)+" ...}" : text;
+				String printable = printableResponse(text);
 				logger.info("JSON: "+printable);
 				return text;
 			}
@@ -117,6 +125,17 @@ public class HttpUtils {
 			}
 		}
 		throw new IOException("Too many retries");
+	}
+	
+	private String printableResponse(String text) {
+		if( ! verbose)
+			return text.length() > 50 ? text.substring(0, 50)+" ...}" : text;
+		else {
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			JsonParser jp = new JsonParser();
+			JsonElement je = jp.parse(text);
+			return gson.toJson(je);
+		}
 	}
 	
 	public String bookCourt(TimeSlot slot, Court court) throws IOException {
