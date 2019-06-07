@@ -109,7 +109,7 @@
 					
 					var hrInMillis = (60*60*1000) * 1;
 					var date = new Date(json[json.length-1].time)
-					date.setTime(date.getTime() - hrsInMillis);
+					date.setTime(date.getTime() - hrInMillis);
 					
 					updateGraph(buildDateString(date));
 				}
