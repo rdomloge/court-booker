@@ -106,7 +106,12 @@
 					console.info("JSON is "+json.length);
 					console.info("Last element time is "+json[json.length-1].time, json[json.length-1]);
 					console.info("Latest date: "+latestDate);
-					updateGraph(latestDate);
+					
+					var hrInMillis = (60*60*1000) * 1;
+					var date = new Date(json[json.length-1].time)
+					date.setTime(date.getTime() - hrsInMillis);
+					
+					updateGraph(buildDateString(date));
 				}
 			});
 		});
