@@ -80,6 +80,7 @@
 	}
 	
 	function updateGraph(dateQ) {
+		console.info("Fetching data since "+dateQ);
 		
 		data = initDataTable();	
 		
@@ -102,6 +103,9 @@
 			$(this).delay(60000).queue(function() {
 				if(json.length > 0) {
 					var latestDate = json[json.length-1].time;
+					console.info("JSON is "+json.length);
+					console.info("Last element time is "+json[json.length-1].time, json[json.length-1]);
+					console.info("Latest date: "+latestDate);
 					updateGraph(latestDate);
 				}
 			});
