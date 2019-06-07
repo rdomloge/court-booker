@@ -13,7 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public interface TemperatureReadingRepository extends PagingAndSortingRepository<TemperatureReading, Integer> {
 
 	List<TemperatureReading> findByTimeGreaterThan(
-			@DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm.SSSZZZ")
+			@DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm.SSSZ")
 			@Param("time")Date from);
 	
 	@Query(value="SELECT rownum() as ID, * FROM\n" + 
