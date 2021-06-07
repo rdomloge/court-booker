@@ -76,9 +76,10 @@
 		updateGraphForDate(buildDateString(date));
 	}
 	
-	function updateGraphForDailyAvg() {
+	function updateGraphForDailyAvg(days) {
 		var date = new Date();
-		date.setFullYear(date.getFullYear() - 1);
+		var dateOffset = (24*60*60*1000) * days;
+		date.setTime(date.getTime() - dateOffset);
 		var dateStr = buildDateString(date);
 		var url = '/distanceReadings/search/findDailyAverageByTimeGreaterThanEqualNative?time='+dateStr;
 		updateGraphForUrl(url);
@@ -110,11 +111,11 @@
 		if('today' == value) {
 			updateGraphForToday();
 		}
-		else if('dailyAvg' == value) {
-			updateGraphForDailyAvg();
+		else if(value.startsWith('A')) {
+			updateGraphForDailyAvg(value.substring(1));
 		}
 		else {
-			updateGraphForLastXHours(value);
+			console.log("Don't understand "+value);
 		}
 	}
 	
@@ -157,9 +158,9 @@
 		<option value="A7">Daily avg last week</option>
 		<option value="A14">Daily avg last fortnight</option>
 		<option value="A30">Daily avg last month</option>
-		<option value="A90">Daily avg last 3 months</option>
+		<option value="A90" selected>Daily avg last 3 months</option>
 		<option value="A180">Daily avg last 6 months</option>
-		<option value="dailyAvg" selected>Daily avg last year</option>
+		<option value="A365">Daily avg last year</option>
 	</select>
 
 	<div id="gauge" style="width: 400px; height: 120px"></div>
